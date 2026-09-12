@@ -62,7 +62,7 @@ Install **Node.js** (v18 or later, which includes `npm`):
 2. Open **Command Prompt** or **PowerShell**.
 3. Clone the repo:
    ```
-   git clone https://github.com/<your-username>/jharkhand-sahyog-setu.git
+   git clone https://github.com/tech42800-wq/Sahyog-Setu.git
    cd jharkhand-sahyog-setu
    ```
 4. Install dependencies:
@@ -88,7 +88,7 @@ Install **Node.js** (v18 or later, which includes `npm`):
 2. Open **Terminal**.
 3. Clone the repo:
    ```
-   git clone https://github.com/<your-username>/jharkhand-sahyog-setu.git
+   git clone https://github.com/tech42800-wq/Sahyog-Setu.git
    cd jharkhand-sahyog-setu
    ```
 4. Install dependencies:
@@ -118,7 +118,7 @@ Install **Node.js** (v18 or later, which includes `npm`):
 2. Open a terminal.
 3. Clone the repo:
    ```
-   git clone https://github.com/<your-username>/jharkhand-sahyog-setu.git
+   git clone https://github.com/tech42800-wq/Sahyog-Setu.git
    cd jharkhand-sahyog-setu
    ```
 4. Install dependencies:
