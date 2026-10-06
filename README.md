@@ -1,160 +1,92 @@
 # Jharkhand Sahyog Setu
 
-**PS ID:** SIH26043 · **Organization:** Government of Jharkhand · **Theme:** MedTech/BioTech/HealthTech · **Category:** Software
+**Bridging citizens, campuses and industry to solve Jharkhand's local challenges together.**
 
-A societal innovation collaboration portal where citizens report local problems — health, education, water, farming, sanitation, infrastructure — and an AI classification engine automatically routes each report to the best-matched university. University teams then work on it with industry/CSR support, tracked through to resolution on a public analytics dashboard.
+A prototype built for **SIH26043 — Societal Innovation Collaboration Portal**, proposed by the Government of Jharkhand. It gives citizens a single place to report a local problem, automatically routes that report to the university best equipped to research it, and lets institutions bring in CSR/industry partners to fund and implement the fix — with a state-wide analytics view over the whole pipeline.
 
-This is a **frontend-only prototype** — no backend, no database, no login. All data is seeded/mocked in the browser session.
+## The problem
 
----
+Civic complaints in India typically die in silos: there's no single channel connecting a citizen's report to a research institution with relevant expertise, and no visibility into whether anyone even saw it. Sahyog Setu's goal is to turn an isolated grievance into a tracked, routed, resourced project.
 
 ## Features
 
-- **Submit Challenge** — citizens report a problem with title, description, district, and photo. AI predicts the domain, routes it to a matched university, and flags likely duplicates.
-- **University Dashboard** — review challenges routed to an institution, move them through a status pipeline (New → Under Review → Team Assigned → In Progress → Resolved), assign student-faculty teams, invite industry/CSR partners.
-- **Analytics Dashboard** — charts for submissions by domain, district, and institutional participation, plus a Before/After impact comparison.
-- **Light/Dark theme** toggle.
-- Realistic seeded Indian mock data (names, districts, dates).
+- **Citizen challenge submission** — a simple form (title, description, district, optional name and photo) that logs a new challenge in seconds.
+- **AI-assisted classification** — each submission is classified into one of seven domains (Healthcare, Education, Agriculture, Water Management, Sanitation, Environment, Infrastructure) and routed to the best-matched university, via a call to the Claude API.
+- **Offline fallback classifier** — if the AI call fails or is unavailable, a deterministic keyword-matching classifier (`localClassify`) takes over automatically, so the app never blocks a citizen from submitting.
+- **Duplicate detection** — new reports are checked for title-word overlap against existing open reports and flagged as possible duplicates so institutions don't duplicate effort.
+- **University dashboard** — per-institution view of routed challenges with search, status filtering, a five-stage status pipeline (`New → Under Review → Team Assigned → In Progress → Resolved`), automatic research-team assignment, and the ability to invite or remove CSR/industry partners per project.
+- **Analytics dashboard** — submissions by domain, by district, by university and status, a submissions trend line, and a "before vs. after" impact comparison panel.
+- **Light / dark theme** — a full design-token-based theme switch, not just a CSS class toggle.
+- **Toast notifications** for every state-changing action.
 
 ## Tech stack
 
-- React (functional components + hooks)
-- Tailwind CSS
-- Recharts (charts)
-- lucide-react (icons)
-- Vite (dev server / build tool)
-
----
+| Layer | Choice |
+|---|---|
+| UI framework | React (hooks + Context API, no external state library) |
+| Charts | [Recharts](https://recharts.org/) |
+| Icons | [lucide-react](https://lucide.dev/) |
+| Styling | Tailwind CSS utility classes + inline design tokens |
+| Fonts | Google Fonts — Fraunces (display) and Inter (body) |
+| AI classification | Anthropic Claude API (`claude-sonnet-4-6`), called client-side with a keyword-based offline fallback |
+| Data | In-memory only — seeded with 14 realistic mock challenges on load, no backend or persistence yet |
 
 ## Project structure
 
-This repo ships the core `App.jsx`. To run it, it needs to sit inside a small Vite scaffold like this:
+This prototype currently lives as a single component tree in `App.jsx`:
 
 ```
-jharkhand-sahyog-setu/
-├── index.html
-├── package.json
-├── vite.config.js
-├── postcss.config.js
-├── tailwind.config.js
-└── src/
-    ├── main.jsx
-    ├── index.css
-    └── App.jsx        ← the file from this repo
+App.jsx
+├── design tokens (LIGHT / DARK themes, ThemeContext)
+├── mock data (districts, domains, universities, CSR partners, seed challenges)
+├── classification (localClassify, aiClassify)
+├── shared UI (SectionCard, Chip, StatusPill, EmptyState, Field, toasts)
+├── Header / tab navigation
+├── SubmitChallenge   → citizen-facing submission form + routing result
+├── UniversityDashboard → per-institution challenge queue & status pipeline
+├── AnalyticsDashboard  → charts + impact summary
+└── AppShell / App      → top-level state, theming, routing between tabs
 ```
 
-If your repo currently only contains `App.jsx`, place it at `src/App.jsx` after creating the scaffold files below (ask for them if you don't have them yet).
+As the project grows, the natural next step is to split this into `src/components/`, `src/lib/classify.js`, `src/data/seed.js`, etc., and move state from `useState` into a backend-backed data layer (see **Roadmap**).
 
----
+## Getting started
 
-## Prerequisites (all platforms)
-
-Install **Node.js** (v18 or later, which includes `npm`):
-
-- Download from [nodejs.org](https://nodejs.org/) (choose the **LTS** version), or
-- Verify an existing install by running `node -v` and `npm -v` in a terminal.
-
----
-
-## Setup & run — Windows
-
-1. Install [Node.js LTS](https://nodejs.org/) using the Windows installer (`.msi`). Accept the default options.
-2. Open **Command Prompt** or **PowerShell**.
-3. Clone the repo:
-   ```
-   git clone https://github.com/tech42800-wq/Sahyog-Setu.git
-   cd jharkhand-sahyog-setu
-   ```
-4. Install dependencies:
-   ```
-   npm install
-   ```
-5. Start the dev server:
-   ```
-   npm run dev
-   ```
-6. Open the URL shown in the terminal (usually `http://localhost:5173`) in your browser.
-
-> If `npm` isn't recognized, restart your terminal after installing Node.js so your `PATH` updates, or reboot your machine.
-
----
-
-## Setup & run — macOS
-
-1. Install Node.js either via the [official installer](https://nodejs.org/) or with [Homebrew](https://brew.sh/):
-   ```
-   brew install node
-   ```
-2. Open **Terminal**.
-3. Clone the repo:
-   ```
-   git clone https://github.com/tech42800-wq/Sahyog-Setu.git
-   cd jharkhand-sahyog-setu
-   ```
-4. Install dependencies:
-   ```
-   npm install
-   ```
-5. Start the dev server:
-   ```
-   npm run dev
-   ```
-6. Open the URL shown in the terminal (usually `http://localhost:5173`) in your browser.
-
----
-
-## Setup & run — Linux
-
-1. Install Node.js via your package manager, or [nvm](https://github.com/nvm-sh/nvm) (recommended for version control):
-   ```
-   # Debian/Ubuntu
-   sudo apt update
-   sudo apt install nodejs npm
-
-   # Or via nvm (any distro)
-   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-   nvm install --lts
-   ```
-2. Open a terminal.
-3. Clone the repo:
-   ```
-   git clone https://github.com/tech42800-wq/Sahyog-Setu.git
-   cd jharkhand-sahyog-setu
-   ```
-4. Install dependencies:
-   ```
-   npm install
-   ```
-5. Start the dev server:
-   ```
-   npm run dev
-   ```
-6. Open the URL shown in the terminal (usually `http://localhost:5173`) in your browser.
-
----
-
-## Building for production (all platforms)
-
-```
-npm run build
+```bash
+npm install
+npm run dev
 ```
 
-This generates a `dist/` folder with static files you can deploy to any static host (Vercel, Netlify, GitHub Pages, etc.).
+Requires a React + Vite (or equivalent) project scaffold with Tailwind CSS configured, and these dependencies:
 
-To preview the production build locally:
+```bash
+npm install react react-dom recharts lucide-react
 ```
-npm run preview
-```
 
----
+### AI classification
 
-## Notes
+The app calls `https://api.anthropic.com/v1/messages` directly from the browser. This works inside the Claude.ai artifact sandbox, where the request is proxied and authenticated automatically, but **will not work as-is in a standalone deployment** — browsers can't safely hold an Anthropic API key, and the request has no auth header. For a real deployment:
 
-- The AI classification feature calls an LLM API for domain classification and university routing. If the API call fails or is unavailable, the app automatically falls back to a local keyword-based classifier — no functionality is lost offline.
-- No environment variables, API keys, or database setup are required to run this prototype.
+1. Move `aiClassify` behind your own backend endpoint (e.g. `/api/routing/classify`).
+2. Hold the Anthropic API key server-side only.
+3. Keep `localClassify` as the client-visible fallback when the backend/API is unreachable — this resilience behavior is already built in and should be preserved.
 
----
+## Known limitations
 
-## License
+- **No persistence** — all challenges live in React state and reset on page reload.
+- **No authentication or real roles** — anyone can act as "a university" by picking it from a dropdown.
+- **No backend** — AI classification is called directly from the client, which is not production-safe (see above).
+- **Duplicate detection is title-only** — it doesn't yet consider description text or district/domain context.
+- **No SLA tracking or escalation** — a challenge can sit in any status indefinitely with no alert.
 
-Prototype built for Smart India Hackathon (SIH26043), Government of Jharkhand.
+## Roadmap
+
+- Backend API (Node/FastAPI) + database (PostgreSQL) to replace in-memory state
+- Real authentication and role-based access per institution/partner
+- SMS/WhatsApp status notifications for citizens
+- Government oversight dashboard and funding accountability trail
+- Multi-language support (Hindi and regional languages)
+
+## Context
+
+Built as a hackathon prototype (Smart India Hackathon, problem statement SIH26043) for the Government of Jharkhand's proposed Societal Innovation Collaboration Portal.
