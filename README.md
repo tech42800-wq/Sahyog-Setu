@@ -1,4 +1,4 @@
-# Jharkhand Sahyog Setu
+# SparkX Prototype
 
 **Bridging citizens, campuses and industry to solve Jharkhand's local challenges together.**
 
